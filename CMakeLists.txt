@@ -14,6 +14,8 @@ include_directories(${CMAKE_SOURCE_DIR}
 
 find_package(OpenMP REQUIRED)
 
+find_package(Boost COMPONENTS system REQUIRED)
+
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 6.4 REQUIRED COMPONENTS Widgets Charts Test REQUIRED)
@@ -33,17 +35,17 @@ add_library(smry_appl STATIC
 
 add_executable(qsummary main.cpp)
 
-#target_link_libraries(smry_appl opmcommon Qt5::Widgets Qt5::Core Qt5::Charts stdc++fs  OpenMP::OpenMP_CXX)
+if(TARGET fmt::fmt)
+  target_link_libraries(MainDispatchDynamic PRIVATE fmt::fmt)
+endif()
+
+
 target_link_libraries(smry_appl opmcommon Qt6::Widgets Qt6::Core Qt6::Charts stdc++fs  OpenMP::OpenMP_CXX)
-
-#target_link_libraries(qsummary smry_appl ${Boost_LIBRARIES} Qt5::Widgets Qt5::Core Qt5::Charts OpenMP::OpenMP_CXX)
-target_link_libraries(qsummary smry_appl ${Boost_LIBRARIES} Qt6::Widgets Qt6::Core Qt6::Charts OpenMP::OpenMP_CXX)
-
+target_link_libraries(qsummary smry_appl Boost::system Qt6::Widgets Qt6::Core Qt6::Charts OpenMP::OpenMP_CXX)
 
 add_executable(update_ref_define ./tests/update_ref_define.cpp)
 
-#target_link_libraries(update_ref_define smry_appl ${Boost_LIBRARIES} Qt5::Widgets Qt5::Core Qt5::Charts OpenMP::OpenMP_CXX)
-target_link_libraries(update_ref_define smry_appl ${Boost_LIBRARIES} Qt6::Widgets Qt6::Core Qt6::Charts OpenMP::OpenMP_CXX)
+target_link_libraries(update_ref_define smry_appl Boost::system Qt6::Widgets Qt6::Core Qt6::Charts OpenMP::OpenMP_CXX)
 
 
 install(TARGETS qsummary DESTINATION bin)
