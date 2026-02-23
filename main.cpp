@@ -108,6 +108,27 @@ static void printHelp()
     exit(0);
 }
 
+bool is_emsry_tmp_file(const std::string& fname)
+{
+
+    size_t p1 = fname.find("_TMP_");
+
+    if (p1 == std::string::npos){
+        return false;
+    }
+
+    p1 = p1 + 5;
+
+    size_t p2 = fname.find(".ESMRY", p1);
+
+    std::string time_stamp_string = fname.substr(p1, p2 - p1 );
+
+    if (std::all_of(time_stamp_string.begin(), time_stamp_string.end(), ::isdigit)){
+        return true;
+    }
+
+    return false;
+}
 
 
 int main(int argc, char *argv[])
@@ -193,6 +214,11 @@ int main(int argc, char *argv[])
 
             if (std::filesystem::exists(unsmry_file))
                 arg_vect.push_back(file_arg);
+
+        } else if (file_arg.substr(l-6) == ".ESMRY"){
+            if (!is_emsry_tmp_file(file_arg)){
+                arg_vect.push_back(file_arg);
+            }
 
         } else
             arg_vect.push_back(file_arg);
