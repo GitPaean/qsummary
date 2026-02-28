@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.0)
 
 project(simple)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set (opm-common_DIR "${CMAKE_SOURCE_DIR}/../opm-common/build" CACHE LOCATION "Build tree of opm-common")
 
@@ -36,12 +37,26 @@ add_library(smry_appl STATIC
 add_executable(qsummary main.cpp)
 
 if(TARGET fmt::fmt)
-  target_link_libraries(MainDispatchDynamic PRIVATE fmt::fmt)
+  target_link_libraries(qsummary PRIVATE fmt::fmt)
 endif()
 
+target_link_libraries(smry_appl PRIVATE
+    opmcommon
+    Qt6::Widgets
+    Qt6::Core
+    Qt6::Charts
+    stdc++fs
+    OpenMP::OpenMP_CXX
+)
 
-target_link_libraries(smry_appl opmcommon Qt6::Widgets Qt6::Core Qt6::Charts stdc++fs  OpenMP::OpenMP_CXX)
-target_link_libraries(qsummary smry_appl Boost::system Qt6::Widgets Qt6::Core Qt6::Charts OpenMP::OpenMP_CXX)
+target_link_libraries(qsummary PRIVATE
+    smry_appl
+    Boost::system
+    Qt6::Widgets
+    Qt6::Core
+    Qt6::Charts
+    OpenMP::OpenMP_CXX
+)
 
 add_executable(update_ref_define ./tests/update_ref_define.cpp)
 
