@@ -45,12 +45,16 @@ KeywordPanel::KeywordPanel(QWidget *parent)
     m_plotButton = new QPushButton("Plot Selected", this);
     layout->addWidget(m_plotButton);
 
+    m_clearButton = new QPushButton("Clear Current Chart", this);
+    layout->addWidget(m_clearButton);
+
     m_statusLabel = new QLabel("", this);
     layout->addWidget(m_statusLabel);
 
     connect(m_filterEdit, &QLineEdit::textChanged, this, &KeywordPanel::onFilterChanged);
     connect(m_treeWidget, &QTreeWidget::itemDoubleClicked, this, &KeywordPanel::onItemDoubleClicked);
     connect(m_plotButton, &QPushButton::clicked, this, &KeywordPanel::onPlotButtonClicked);
+    connect(m_clearButton, &QPushButton::clicked, this, &KeywordPanel::onClearButtonClicked);
 }
 
 std::string KeywordPanel::categoryName(const std::string& keyword)
@@ -180,4 +184,9 @@ void KeywordPanel::onPlotButtonClicked()
 
     if (!selections.empty())
         emit keywordsPlotRequested(selections);
+}
+
+void KeywordPanel::onClearButtonClicked()
+{
+    emit clearChartRequested();
 }

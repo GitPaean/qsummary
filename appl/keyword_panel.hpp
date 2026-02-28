@@ -43,11 +43,13 @@ public:
 signals:
     void keywordSelected(const std::string& keyword, int smry_ind);
     void keywordsPlotRequested(const std::vector<std::pair<std::string, int>>& selections);
+    void clearChartRequested();
 
 private slots:
     void onFilterChanged(const QString& text);
     void onItemDoubleClicked(QTreeWidgetItem* item, int column);
     void onPlotButtonClicked();
+    void onClearButtonClicked();
 
 private:
     void populateTree(const QString& filter = "");
@@ -57,6 +59,7 @@ private:
     QLineEdit* m_filterEdit;
     QTreeWidget* m_treeWidget;
     QPushButton* m_plotButton;
+    QPushButton* m_clearButton;
     QLabel* m_statusLabel;
 
     std::vector<std::vector<std::string>> m_vect_list;

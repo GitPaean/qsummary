@@ -3364,3 +3364,15 @@ void SmryAppl::openSummaryFiles(const QStringList& fileNames)
         lbl_cmd->setPalette(palette);
     }
 }
+
+
+void SmryAppl::clearCurrentChart()
+{
+    if (!m_smry_loaded)
+        return;
+
+    while (!series[chart_ind].empty())
+        delete_last_series();
+
+    this->update_chart_labels();
+}

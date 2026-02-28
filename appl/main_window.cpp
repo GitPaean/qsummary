@@ -47,6 +47,8 @@ MainWindow::MainWindow(std::vector<std::string> arg_vect,
             this, &MainWindow::onKeywordSelected);
     connect(m_keywordPanel, &KeywordPanel::keywordsPlotRequested,
             this, &MainWindow::onKeywordsPlotRequested);
+    connect(m_keywordPanel, &KeywordPanel::clearChartRequested,
+            this, &MainWindow::onClearChart);
 }
 
 void MainWindow::createMenus()
@@ -124,4 +126,9 @@ void MainWindow::updateKeywordPanel()
     m_keywordPanel->updateKeywords(
         m_smryAppl->getKeywordLists(),
         m_smryAppl->getRootNameList());
+}
+
+void MainWindow::onClearChart()
+{
+    m_smryAppl->clearCurrentChart();
 }

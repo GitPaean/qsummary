@@ -90,6 +90,7 @@ public:
 
     void addSeriesFromPanel(const std::string& keyword, int file_ind);
     void openSummaryFiles(const QStringList& fileNames);
+    void clearCurrentChart();
 
 protected:
 

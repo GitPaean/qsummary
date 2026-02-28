@@ -46,6 +46,7 @@ private slots:
     void onKeywordSelected(const std::string& keyword, int smry_ind);
     void onKeywordsPlotRequested(const std::vector<std::pair<std::string, int>>& selections);
     void onToggleKeywordPanel();
+    void onClearChart();
 
 private:
     void createMenus();
