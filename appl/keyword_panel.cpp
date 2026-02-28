@@ -136,8 +136,8 @@ void KeywordPanel::populateTree(const QString& filter)
             }
             kwItem->setText(1, case_str);
 
-            // Store the first case index as data
-            kwItem->setData(0, Qt::UserRole, case_indices.empty() ? 0 : case_indices[0]);
+            // Store the first case index as data (-1 if not available)
+            kwItem->setData(0, Qt::UserRole, case_indices.empty() ? -1 : case_indices[0]);
 
             total_count++;
         }

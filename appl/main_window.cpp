@@ -20,6 +20,7 @@
 
 #include <QFileDialog>
 #include <QDir>
+#include <algorithm>
 #include <iostream>
 
 MainWindow::MainWindow(std::vector<std::string> arg_vect,
@@ -79,12 +80,12 @@ void MainWindow::onOpenFiles()
     updateKeywordPanel();
 }
 
-void MainWindow::onKeywordSelected(const std::string& keyword, int smry_ind)
+void MainWindow::onKeywordSelected(const std::string& keyword, int /*smry_ind*/)
 {
     if (!m_smryAppl->isSmryLoaded())
         return;
 
-    // Add series for all loaded files that have this keyword
+    // Add series for all loaded files that have this keyword (for comparison)
     auto vect_lists = m_smryAppl->getKeywordLists();
     for (size_t i = 0; i < vect_lists.size(); i++) {
         auto& vl = vect_lists[i];
@@ -101,8 +102,9 @@ void MainWindow::onKeywordsPlotRequested(const std::vector<std::pair<std::string
 
     auto vect_lists = m_smryAppl->getKeywordLists();
 
-    for (const auto& [keyword, smry_ind] : selections) {
-        // Add series for all loaded files that have this keyword
+    for (const auto& sel : selections) {
+        const auto& keyword = sel.first;
+        // Add series for all loaded files that have this keyword (for comparison)
         for (size_t i = 0; i < vect_lists.size(); i++) {
             auto& vl = vect_lists[i];
             if (std::find(vl.begin(), vl.end(), keyword) != vl.end()) {

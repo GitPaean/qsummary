@@ -3359,8 +3359,8 @@ void SmryAppl::openSummaryFiles(const QStringList& fileNames)
         lbl_plot->setText("new chart");
         le_commands->setEnabled(1);
 
-        QPalette *palette = new QPalette();
-        palette->setColor(QPalette::Text, Qt::black);
-        lbl_cmd->setPalette(*palette);
+        QPalette palette;
+        palette.setColor(QPalette::Text, Qt::black);
+        lbl_cmd->setPalette(palette);
     }
 }
