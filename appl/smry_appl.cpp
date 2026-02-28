@@ -3244,3 +3244,135 @@ void SmryAppl::select_last_chart()
 
     this->update_chart_labels();
 }
+
+
+void SmryAppl::addSeriesFromPanel(const std::string& keyword, int file_ind)
+{
+    if (!m_smry_loaded)
+        return;
+
+    // Validate file_ind
+    if (file_ind < 0 || static_cast<size_t>(file_ind) >= m_file_type.size())
+        return;
+
+    // Check if the keyword exists for this file
+    bool hasVect = false;
+    if (m_file_type[file_ind] == FileType::SMSPEC)
+        hasVect = m_esmry_loader[file_ind]->hasKey(keyword);
+    else if (m_file_type[file_ind] == FileType::ESMRY)
+        hasVect = m_ext_esmry_loader[file_ind]->hasKey(keyword);
+
+    if (!hasVect)
+        return;
+
+    // Load data if needed (include TIME for plotting)
+    if (m_file_type[file_ind] == FileType::SMSPEC)
+        m_esmry_loader[file_ind]->loadData({"TIME", keyword});
+    else if (m_file_type[file_ind] == FileType::ESMRY)
+        m_ext_esmry_loader[file_ind]->loadData({"TIME", keyword});
+
+    std::tuple<QDateTime,QDateTime> current_xrange;
+    bool set_current = false;
+
+    if ((series[chart_ind].size() > 0) && (!axisX[chart_ind]->has_full_range())) {
+        current_xrange = axisX[chart_ind]->get_current_xrange();
+        set_current = true;
+    }
+
+    add_new_series(chart_ind, file_ind, keyword);
+
+    update_full_xrange(chart_ind);
+
+    if (set_current)
+        axisX[chart_ind]->setRange(std::get<0>(current_xrange), std::get<1>(current_xrange));
+
+    auto min_max_range = axisX[chart_ind]->get_xrange();
+    update_all_yaxis(min_max_range, chart_ind);
+
+    this->update_chart_labels();
+}
+
+
+void SmryAppl::openSummaryFiles(const QStringList& fileNames)
+{
+    for (const auto& fileName : fileNames) {
+        if (fileName.isEmpty())
+            continue;
+
+        std::filesystem::path filename(fileName.toStdString());
+        std::string ext = filename.extension().string();
+
+        if (ext != ".SMSPEC" && ext != ".FSMSPEC" && ext != ".ESMRY")
+            continue;
+
+        m_smry_files.push_back(filename);
+
+        size_t new_ind = m_file_type.size();
+
+        auto ftime = std::filesystem::last_write_time(filename);
+        file_stamp_vector.push_back(ftime);
+
+        if (ext == ".SMSPEC" || ext == ".FSMSPEC") {
+            m_file_type.push_back(FileType::SMSPEC);
+
+            try {
+                m_esmry_loader[new_ind] = std::make_unique<Opm::EclIO::ESmry>(filename);
+            } catch (...) {
+                std::string message = "Error with opening SMSPEC file " + filename.string();
+                std::cout << message << std::endl;
+                m_smry_files.pop_back();
+                m_file_type.pop_back();
+                file_stamp_vector.pop_back();
+                continue;
+            }
+
+            root_name_list.push_back(m_esmry_loader[new_ind]->rootname());
+            vect_list.push_back(m_esmry_loader[new_ind]->keywordList());
+
+            if ((!m_esmry_loader[new_ind]->hasKey("TIMESTEP") && (m_esmry_loader[new_ind]->all_steps_available())))
+                vect_list.back().push_back("TIMESTEP");
+
+        } else if (ext == ".ESMRY") {
+            m_file_type.push_back(FileType::ESMRY);
+
+            try {
+                m_ext_esmry_loader[new_ind] = std::make_unique<Opm::EclIO::ExtESmry>(filename);
+            } catch (...) {
+                std::string message = "Error with opening ESMRY file " + filename.string();
+                std::cout << message << std::endl;
+                m_smry_files.pop_back();
+                m_file_type.pop_back();
+                file_stamp_vector.pop_back();
+                continue;
+            }
+
+            root_name_list.push_back(m_ext_esmry_loader[new_ind]->rootname());
+            vect_list.push_back(m_ext_esmry_loader[new_ind]->keywordList());
+
+            if ((!m_ext_esmry_loader[new_ind]->hasKey("TIMESTEP") && (m_ext_esmry_loader[new_ind]->all_steps_available())))
+                vect_list.back().push_back("TIMESTEP");
+        }
+    }
+
+    if (!m_smry_loaded && m_file_type.size() > 0) {
+        m_smry_loaded = true;
+        lbl_plot->setText("new chart");
+        le_commands->setEnabled(1);
+
+        QPalette palette;
+        palette.setColor(QPalette::Text, Qt::black);
+        lbl_cmd->setPalette(palette);
+    }
+}
+
+
+void SmryAppl::clearCurrentChart()
+{
+    if (!m_smry_loaded)
+        return;
+
+    while (!series[chart_ind].empty())
+        delete_last_series();
+
+    this->update_chart_labels();
+}

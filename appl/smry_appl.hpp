@@ -36,6 +36,7 @@
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QLabel>
+#include <QStringList>
 
 #include <set>
 
@@ -83,6 +84,13 @@ public:
     size_t number_of_charts() { return chartList.size(); }
     size_t number_of_series(int chart_ind) { return series[chart_ind].size(); }
 
+    std::vector<std::vector<std::string>> getKeywordLists() const { return vect_list; }
+    std::vector<std::string> getRootNameList() const { return root_name_list; }
+    bool isSmryLoaded() const { return m_smry_loaded; }
+
+    void addSeriesFromPanel(const std::string& keyword, int file_ind);
+    void openSummaryFiles(const QStringList& fileNames);
+    void clearCurrentChart();
 
 protected:
 
