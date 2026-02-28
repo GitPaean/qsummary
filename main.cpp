@@ -19,6 +19,7 @@
 #include <QtWidgets/QApplication>
 
 #include <appl/smry_appl.hpp>
+#include <appl/main_window.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -415,13 +416,13 @@ int main(int argc, char *argv[])
     loaders = std::make_tuple(smry_files, file_type, std::move(esmry_loader), std::move(lodsmry_loader));
 
 
-    SmryAppl window(arg_vect, loaders, input_charts, derived_smry);
+    MainWindow window(arg_vect, loaders, input_charts, derived_smry);
 
-    window.resize(1400, 700);
+    window.resize(1600, 700);
 
     window.setWindowTitle("qsummary");
 
-    window.move(300, 100);
+    window.move(200, 100);
 
     window.show();
 

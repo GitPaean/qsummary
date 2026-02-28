@@ -32,6 +32,8 @@ add_library(smry_appl STATIC
    appl/qsum_cmdf.cpp
    appl/derived_smry.cpp
    appl/qsum_func_lib.cpp
+   appl/keyword_panel.cpp
+   appl/main_window.cpp
   )
 
 add_executable(qsummary main.cpp)
