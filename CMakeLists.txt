@@ -34,12 +34,15 @@ add_library(smry_appl STATIC
    appl/qsum_func_lib.cpp
    appl/keyword_panel.cpp
    appl/main_window.cpp
+   appl/run_flow_window.cpp
   )
 
 add_executable(qsummary main.cpp)
+add_executable(run-flow run_flow_main.cpp)
 
 if(TARGET fmt::fmt)
   target_link_libraries(qsummary PRIVATE fmt::fmt)
+  target_link_libraries(run-flow PRIVATE fmt::fmt)
 endif()
 
 target_link_libraries(smry_appl PRIVATE
@@ -60,9 +63,18 @@ target_link_libraries(qsummary PRIVATE
     OpenMP::OpenMP_CXX
 )
 
+target_link_libraries(run-flow PRIVATE
+    smry_appl
+    Boost::system
+    Qt6::Widgets
+    Qt6::Core
+    Qt6::Charts
+    OpenMP::OpenMP_CXX
+)
+
 add_executable(update_ref_define ./tests/update_ref_define.cpp)
 
 target_link_libraries(update_ref_define smry_appl Boost::system Qt6::Widgets Qt6::Core Qt6::Charts OpenMP::OpenMP_CXX)
 
 
-install(TARGETS qsummary DESTINATION bin)
+install(TARGETS qsummary run-flow DESTINATION bin)

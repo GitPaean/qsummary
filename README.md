@@ -24,5 +24,28 @@ This command will create 7 charts.
 
 Use option -h on the command line to get help one command line options, commands and key controls.
 
+## run-flow
+
+`run-flow` is a GUI application for editing and running OPM-flow simulation DATA files. It provides:
+
+- A text editor for viewing and editing DATA files
+- Controls to specify the path to the `flow` executable
+- A "Run" button to launch the simulation, with real-time progress output
+- Automatic loading and plotting of key summary vectors (FPR, FOPR, TCPU) when the simulation completes
+
+Usage:
+```
+run-flow
+```
+
+The application opens a window where you can:
+1. Open a DATA file using "File > Open DATA File" or the "Open..." button
+2. Edit the file content in the built-in text editor
+3. Set the path to the `flow` executable
+4. Click "Run" to start the simulation and monitor its progress
+5. When the simulation finishes, summary plots are automatically displayed
+
+## Building
+
 Clone opm-common and qsummary and make sure that these two repos a are located next to each other. Start with building opm-common before building qsummary.
 
