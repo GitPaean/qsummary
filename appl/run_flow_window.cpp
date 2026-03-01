@@ -233,6 +233,11 @@ void RunFlowWindow::onRunFlow()
     m_logOutput->appendPlainText("DATA file: " + m_dataFilePath);
     m_logOutput->appendPlainText("---");
 
+    if (m_flowProcess) {
+        m_flowProcess->deleteLater();
+        m_flowProcess = nullptr;
+    }
+
     m_flowProcess = new QProcess(this);
 
     connect(m_flowProcess, &QProcess::readyReadStandardOutput,
